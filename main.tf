@@ -51,9 +51,9 @@ output "security_group_id" {
   value = aws_security_group.main.id
 }
  output "public-ip" {
-value = [for public in aws_instance.ec2_example : public.public_ip]
+value = aws_instance.ec2_example.public_ip
 }
 
 output "private-ip" {
-value = [for private in aws_instance.ec2_example : private.private_ip]
+value = aws_instance.ec2_example.private_ip
 }
