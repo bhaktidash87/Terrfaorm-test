@@ -17,7 +17,6 @@ resource "aws_instance" "ec2_example" {
       sudo echo "<html><body><h1>Hello this is test module1 at instance id `curl http://169.254.169.254/latest/meta-data/instance-id` </h1></body></html>" > /var/www/html/index.html
       EOF
 }
-
 resource "aws_security_group" "main" {
     name        = "EC2-webserver-SG111"
   description = "Webserver for EC2 Instances"
@@ -28,7 +27,12 @@ resource "aws_security_group" "main" {
     to_port     = 80
     cidr_blocks = ["0.0.0.0/0"]
   }
-
+  ingress {
+    from_port   = 8443
+    protocol    = "TCP"
+    to_port     = 8443
+    cidr_blocks = ["0.0.0.0/0"]
+  }
   ingress {
     from_port   = 22
     protocol    = "TCP"
@@ -42,4 +46,14 @@ resource "aws_security_group" "main" {
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+output "security_group_id" {
+  value = aws_security_group.main.id
+}
+ output "public-ip" {
+value = [for public in aws_instance.ec2_example : public.public_ip]
+}
+
+output "private-ip" {
+value = [for private in aws_instance.ec2_example : private.private_ip]
 }
